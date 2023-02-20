@@ -10,17 +10,12 @@ import com.example.projectqlch.Repository.CartRepository;
 import com.example.projectqlch.Repository.ProductRepository;
 import com.example.projectqlch.Repository.UserRepository;
 import com.example.projectqlch.Service.CartService;
-import com.example.projectqlch.Service.ProductService;
 import com.example.projectqlch.dto.CartDTO;
-import com.example.projectqlch.dto.CartItemRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -32,28 +27,40 @@ public class CartServiceImpl implements CartService {
     private final CartConvert cartConvert;
 
 
+    public static CartItem getCartItemByCartAndProduct(Cart cart,Product product){
+        List<CartItem> temp = cart.getCartItemList();
+        for(CartItem item : temp){
+            if(item.getProduct()==product) {
+                return item;
+            }
+        }
+        return null;
+    }
     @Override
-    public List<CartDTO> addProductToCart(Long id, CartItemRequest cartItemRequest) {
-        User user = userRepository.findUserById(id);
+    public List<CartDTO> addProductToCart(Long id, CartDTO cartDTO) {
 
-        Product product = productRepository.findProductById(cartItemRequest.getProductId());
+        Product product = productRepository.findProductById(cartDTO.getIdProduct());
 
-        Cart cart = cartRepository.findCartByUserId(user.getId());
+        Cart cart = cartRepository.findCartByUserId(id);
 
-        CartItem cartItem = new CartItem();
-        cartItem.setCart(cart);
-        cartItem.setProduct(product);
-        cartItem.setPrice(product.getPrice()* cartItemRequest.getQuantity());
 
+        CartItem cartItem = getCartItemByCartAndProduct(cart,product);
+        if(cartItem==null){
+            cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setPrice(product.getPrice()* cartDTO.getQuantityProduct());
+            cartItem.setQuantityProduct(cartDTO.getQuantityProduct());
+        }else {
+            cartItem.setQuantityProduct(cartDTO.getQuantityProduct()+cartItem.getQuantityProduct());
+        }
         List<CartItem> cartItemList = cart.getCartItemList();
         if(cartItemList.isEmpty()){
             cartItemList = new ArrayList<>();
+            cartItemList.add(cartItem);
         }
-        cartItemList.add(cartItem);
         cart.setCartItemList(cartItemList);
-
         cartItemRepository.save(cartItem);
-
         return cartConvert.ToCartDTO(cart);
     }
 }
