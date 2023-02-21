@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/{id}")
+@RequestMapping("/{userid}")
 public class CartController {
     @Autowired
     private CartService cartService;
 
     @PostMapping("/cart")
-    public List<CartDTO> addProductToCart(@PathVariable Long id, @RequestBody CartDTO cartDTO){
-        return cartService.addProductToCart(id, cartDTO);
+    public List<CartDTO> addProductToCart(@PathVariable Long userid, @RequestBody CartDTO cartDTO){
+        return cartService.addProductToCart(userid, cartDTO);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.projectqlch.Service.Impl;
 
+import com.example.projectqlch.Convert.ProductConvert;
 import com.example.projectqlch.Entity.Product;
 import com.example.projectqlch.Repository.ProductRepository;
 import com.example.projectqlch.Service.ProductService;
@@ -22,11 +23,12 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ProductImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final ProductConvert productConvert;
 
-    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir")+"src/main/resources");
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir")+"/src/main/resources");
 
     @Override
-    public Product createProduct(String name,
+    public ProductDTO createProduct(String name,
                                  String description,
                                  double price,
                                  int quantity,
@@ -49,7 +51,8 @@ public class ProductImpl implements ProductService {
         product.setProductImage(uploadPath.resolve(image.getOriginalFilename()).toString());
         product.setQuantity(quantity);
         product.setPrice(price);
-        return productRepository.save(product);
+        productRepository.save(product);
+        return productConvert.toProductDTO(product);
 
     }
 

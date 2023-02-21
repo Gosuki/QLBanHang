@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ProductService {
-    Product createProduct(String name, String description, double price,
+    ProductDTO createProduct(String name, String description, double price,
                              int quantity, MultipartFile image) throws IOException;
 
     public byte[] downloadProductImage(String name,Long id) throws IOException;

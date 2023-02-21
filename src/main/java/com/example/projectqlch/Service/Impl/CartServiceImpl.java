@@ -40,9 +40,12 @@ public class CartServiceImpl implements CartService {
     public List<CartDTO> addProductToCart(Long id, CartDTO cartDTO) {
 
         Product product = productRepository.findProductById(cartDTO.getIdProduct());
-
         Cart cart = cartRepository.findCartByUserId(id);
-
+        if(cart == null){
+            cart = new Cart();
+            cart.setUser(userRepository.findUserById(id));
+            cartRepository.save(cart);
+        }
 
         CartItem cartItem = getCartItemByCartAndProduct(cart,product);
         if(cartItem==null){
