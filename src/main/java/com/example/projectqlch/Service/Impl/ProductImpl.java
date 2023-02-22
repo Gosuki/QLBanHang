@@ -18,7 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -98,5 +101,31 @@ public class ProductImpl implements ProductService {
        }else {
             return null;
         }
+    }
+
+    @Override
+    public String deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+        return "Successfully deleted";
+    }
+
+    @Override
+    public List<ProductDTO> getAllProducts() {
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        List<Product> productList= productRepository.findAllProducts();
+        for (Product product :productList){
+            productDTOList.add(productConvert.toProductDTO(product));
+        }
+        return productDTOList;
+    }
+
+    @Override
+    public List<ProductDTO> searchProductByName(String name) {
+        List<Product> productList= productRepository.searchProductByNameLike(name);
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Product temp :productList){
+            productDTOList.add(productConvert.toProductDTO(temp));
+        }
+        return productDTOList;
     }
 }

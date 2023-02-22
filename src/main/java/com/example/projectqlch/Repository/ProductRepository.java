@@ -16,4 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findProductByProductImageAndId(String name,Long id);
 
     Product findProductById(Long id);
+    @Query(value="select u from Product u")
+    List<Product> findAllProducts();
+    @Query(value="select u from Product u where u.name like %:name%")
+    List<Product> searchProductByNameLike(String name);
 }

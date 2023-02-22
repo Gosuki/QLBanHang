@@ -1,6 +1,8 @@
 package com.example.projectqlch.Controlller;
 
+import com.example.projectqlch.Repository.ProductRepository;
 import com.example.projectqlch.Service.ProductService;
+import com.example.projectqlch.dto.BaseResponse;
 import com.example.projectqlch.dto.ProductDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestParam String name,
@@ -42,6 +45,18 @@ public class ProductController {
                                            @RequestParam int quantity,
                                            @RequestParam MultipartFile image){
         return ResponseEntity.ok(productService.updateProduct(productId,name, description, price, quantity, image));
+    }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long productId){
+        return ResponseEntity.ok(productService.deleteProduct(productId));
+    }
+    @GetMapping
+    public ResponseEntity<?> getProduct(){
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProduct(@RequestParam String name){
+        return ResponseEntity.ok(productService.searchProductByName(name));
     }
 
 }
