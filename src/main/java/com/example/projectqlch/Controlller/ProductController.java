@@ -1,6 +1,7 @@
 package com.example.projectqlch.Controlller;
 
 import com.example.projectqlch.Service.ProductService;
+import com.example.projectqlch.dto.ProductDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,15 @@ public class ProductController {
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
 
+    }
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long productId,
+                                           @RequestParam String name,
+                                           @RequestParam String description,
+                                           @RequestParam double price,
+                                           @RequestParam int quantity,
+                                           @RequestParam MultipartFile image){
+        return ResponseEntity.ok(productService.updateProduct(productId,name, description, price, quantity, image));
     }
 
 }

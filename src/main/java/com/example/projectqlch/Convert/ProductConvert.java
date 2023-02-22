@@ -19,4 +19,13 @@ public class ProductConvert {
         result.setDescription(product.getDescription());
         return result;
     }
+    public Product toProduct(ProductDTO productDTO) {
+        Product result= new Product();
+        result.setId(productDTO.getId());
+        result.setName(productDTO.getName());
+        result.setPrice(productDTO.getPrice());
+        result.setQuantity(productDTO.getQuantity());
+        result.setDescription(productDTO.getDescription());
+        return result;
+    }
 }

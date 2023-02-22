@@ -12,4 +12,6 @@ public interface ProductService {
 
     public byte[] downloadProductImage(String name,Long id) throws IOException;
     ProductDTO searchProduct(ProductDTO product);
+    ProductDTO updateProduct(Long id,String name, String description, double price,
+                             int quantity, MultipartFile image);
 }
