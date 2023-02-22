@@ -17,6 +17,8 @@ public class UserConvert {
         dto.setRole(user.getRole());
         dto.setFullName(user.getName());
         dto.setActive(user.isActive());
+        dto.setAddress(user.getAddress());
+        dto.setImageUrl(user.getImageUrl());
         return dto;
     }
     public User toEntityUser(UserDTO userDTO) {
@@ -28,6 +30,7 @@ public class UserConvert {
         user.setUsername(userDTO.getUsername());
         user.setRole(userDTO.getRole());
         user.setActive(userDTO.isActive());
+        user.setAddress(userDTO.getAddress());
 
         return user;
     }
