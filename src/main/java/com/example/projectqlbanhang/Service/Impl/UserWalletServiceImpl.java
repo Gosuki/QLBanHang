@@ -1,5 +1,6 @@
 package com.example.projectqlbanhang.Service.Impl;
 
+import com.example.projectqlbanhang.Convert.UserWalletConvert;
 import com.example.projectqlbanhang.Entity.User;
 import com.example.projectqlbanhang.Entity.UserWallet;
 import com.example.projectqlbanhang.Repository.UserRepository;
@@ -15,6 +16,8 @@ public class UserWalletServiceImpl implements UserWalletService {
     private UserRepository userRepository;
     @Autowired
     private UserWalletRepository userWalletRepository;
+    @Autowired
+    private UserWalletConvert userWalletConvert;
 
     @Override
     public UserWalletDTO createUserWallet(Long userId) {
@@ -26,10 +29,7 @@ public class UserWalletServiceImpl implements UserWalletService {
         userWallet.setUser(user);
         userWallet.setBalance(0);
         UserWallet savedUserWallet =userWalletRepository.save(userWallet);
-        UserWalletDTO dto = new UserWalletDTO();
-        dto.setUserName(user.getName());
-        dto.setBalance(savedUserWallet.getBalance());
-        return dto;
+        return userWalletConvert.userWalletDTO(savedUserWallet);
     }
 
     @Override
@@ -41,10 +41,7 @@ public class UserWalletServiceImpl implements UserWalletService {
         }
         userWallet.setBalance(money+userWallet.getBalance());
         userWalletRepository.save(userWallet);
-        UserWalletDTO dto = new UserWalletDTO();
-        dto.setUserName(user.getName());
-        dto.setBalance(userWallet.getBalance());
-        return dto;
+        return userWalletConvert.userWalletDTO(userWallet);
     }
 
     @Override

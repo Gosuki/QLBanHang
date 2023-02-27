@@ -5,5 +5,5 @@ import com.example.projectqlbanhang.dto.UserWalletDTO;
 public interface UserWalletService {
     UserWalletDTO createUserWallet(Long userId);
     UserWalletDTO depositUserWallet(Long userId,double money);
-    String deleteUserWallet(Long[] userId);
+    String deleteUserWallet(Long[] userIds);
 }
