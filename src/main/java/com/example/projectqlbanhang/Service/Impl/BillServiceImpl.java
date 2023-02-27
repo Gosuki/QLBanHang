@@ -27,10 +27,10 @@ public class BillServiceImpl implements BillService {
     @Override
     public BillDTO createBill(CartDTO cartDTO) {
         User user = userRepository.findUserById(cartDTO.getUserId());
-        List<CartItemDTO> cartItemDTOS=cartDTO.getCartItems();
+        Long[] cardItemIds = cartDTO.getCartItemsIds();
         List<CartItem> cartItemList = new ArrayList<>();
-        for (CartItemDTO cartItemDTO : cartItemDTOS){
-            cartItemList.add(cartItemRepository.findCartItemById(cartItemDTO.getCartItemId()));
+        for (Long cartItemId : cardItemIds){
+            cartItemList.add(cartItemRepository.findCartItemById(cartItemId));
         }
 
         Bill bill = new Bill();
@@ -73,7 +73,7 @@ public class BillServiceImpl implements BillService {
         {
             return null;
         }
-        userWallet.setBalance(bill.getSum()-userWallet.getBalance());
+        userWallet.setBalance(userWallet.getBalance()-bill.getSum());
         userWalletRepository.save(userWallet);
         bill.setStatus(PaymentStatus.SUCCESS);
         bill.setPayDate(new Date());
