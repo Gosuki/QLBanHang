@@ -26,7 +26,5 @@ public class User {
     private String imageUrl;
     @OneToMany(mappedBy ="user")
     private List<Bill> billList;
-    @OneToOne(mappedBy ="user")
-    private UserWallet userWalletList;
 
 }

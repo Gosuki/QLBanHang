@@ -25,7 +25,7 @@ public class Bill {
     private User user;
 
     @OneToOne(mappedBy ="billPayment")
-    private PaymentRequest paymentRequest;
+    private PaymentEntity paymentEntity;
 
     @OneToMany(mappedBy ="bill")
     private List<BillDetails> billDetails;

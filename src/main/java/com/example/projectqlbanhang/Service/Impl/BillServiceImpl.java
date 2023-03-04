@@ -5,13 +5,10 @@ import com.example.projectqlbanhang.Repository.*;
 import com.example.projectqlbanhang.Service.BillService;
 import com.example.projectqlbanhang.dto.BillDTO;
 import com.example.projectqlbanhang.dto.CartDTO;
-import com.example.projectqlbanhang.dto.CartItemDTO;
-import com.example.projectqlbanhang.dto.PaymentRequestDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,9 +17,8 @@ public class BillServiceImpl implements BillService {
     private final UserRepository userRepository;
     private final BillRepository billRepository;
     private final CartItemRepository cartItemRepository;
-    private final UserWalletRepository userWalletRepository;
     private final BillDetailsRepository billDetailsRepository;
-    private final PaymentRequestRepository paymentRequestRepository;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public BillDTO createBill(CartDTO cartDTO) {
@@ -46,12 +42,11 @@ public class BillServiceImpl implements BillService {
             cartItemList.get(i).setBillDetails(billDetails);
             cartItemRepository.save(cartItemList.get(i));
         }
-        PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setUser(user);
-        paymentRequest.setStatus(PaymentStatus.PENDING);
-        paymentRequest.setAmount(getTotalPrice(cartItemList));
-        paymentRequest.setBillPayment(bill);
-        paymentRequestRepository.save(paymentRequest);
+        PaymentEntity paymentEntity = new PaymentEntity();
+        paymentEntity.setStatus(PaymentStatus.PENDING);
+        paymentEntity.setTotalPayment(getTotalPrice(cartItemList));
+        paymentEntity.setBillPayment(bill);
+        paymentRepository.save(paymentEntity);
 
         BillDTO billDTO = new BillDTO();
         billDTO.setUsername(bill.getUser().getUsername());
@@ -63,31 +58,6 @@ public class BillServiceImpl implements BillService {
         billDTO.setCartDTO(cartDTO);
         return billDTO;
     }
-
-    @Override
-    public String payBill(PaymentRequestDTO paymentRequestDTO) {
-        User user = userRepository.findUserById(paymentRequestDTO.getUserId());
-        Bill bill = billRepository.findBillById(paymentRequestDTO.getBillId());
-        UserWallet userWallet = user.getUserWalletList();
-        if(userWallet.getBalance() < bill.getSum())
-        {
-            return null;
-        }
-        userWallet.setBalance(userWallet.getBalance()-bill.getSum());
-        userWalletRepository.save(userWallet);
-        bill.setStatus(PaymentStatus.SUCCESS);
-        bill.setPayDate(new Date());
-        billRepository.save(bill);
-
-        List<BillDetails> billDetailsList = bill.getBillDetails();
-        for (BillDetails billDetails : billDetailsList){
-            CartItem cartItem = cartItemRepository.findCartItemById(billDetails.getId());
-            cartItemRepository.delete(cartItem);
-        }
-        bill.getPaymentRequest().setStatus(PaymentStatus.SUCCESS);
-        return "SUCCESS";
-    }
-
     public double getTotalPrice(List<CartItem> cartItemList) {
         double totalPrice=0;
         for (CartItem cartItem:cartItemList){
