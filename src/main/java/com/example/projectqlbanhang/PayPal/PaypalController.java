@@ -1,8 +1,10 @@
 package com.example.projectqlbanhang.PayPal;
 
 import com.example.projectqlbanhang.Entity.Bill;
+import com.example.projectqlbanhang.Entity.BillDetails;
 import com.example.projectqlbanhang.Entity.PaymentEntity;
 import com.example.projectqlbanhang.Repository.BillRepository;
+import com.example.projectqlbanhang.Repository.CartItemRepository;
 import com.example.projectqlbanhang.Repository.PaymentRepository;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.projectqlbanhang.Entity.PaymentStatus.PENDING;
@@ -33,6 +36,8 @@ public class PaypalController {
     private PaymentRepository paymentRepository;
     @Autowired
     private BillRepository billRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @PostMapping("/pay")
     public ResponseEntity<?> payment(@RequestBody PaymentRequestDTO paymentRequestDTO) {
@@ -83,6 +88,10 @@ public class PaypalController {
                     bill.setPaymentEntity(paymentEntity);
                     bill.setStatus(SUCCESS);
                     billRepository.save(bill);
+                    List<BillDetails> billDetails=bill.getBillDetails();
+                    for (BillDetails billDetail : billDetails) {
+                        cartItemRepository.deleteAllByBillDetails(billDetail);
+                    }
                 }
                 return ResponseEntity.ok("Payment successful");
             } else {

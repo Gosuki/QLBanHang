@@ -46,7 +46,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long productId){
         return ResponseEntity.ok(productService.deleteProduct(productId));
     }
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getProduct(){
         return ResponseEntity.ok(productService.getAllProducts());
     }

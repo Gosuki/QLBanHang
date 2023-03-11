@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -43,6 +45,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir")+"/src/main/resources/static/UserImage/307691984_811271283242512_124413355601862320_n.jpg");
 
@@ -52,6 +57,7 @@ public class UserServiceImpl implements UserService {
         File file = new File(String.valueOf(CURRENT_FOLDER));
         user.setImageUrl(CURRENT_FOLDER.toString());
         user.setActive(false);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User savedUser = userRepository.save(user);
         generateToken(user);
         return savedUser;
@@ -81,6 +87,7 @@ public class UserServiceImpl implements UserService {
         if(user==null) {
             return null;
         }
+        user.setUsername(userDTO.getUsername());
         user.setName(userDTO.getFullName());
         user.setEmail(userDTO.getEmail());
         user.setAddress(userDTO.getAddress());
@@ -118,7 +125,7 @@ public class UserServiceImpl implements UserService {
         User userSaved = userRepository.findUserByIdAndActive(userId,true);
         if(changePasswordRequest.getPassword().equals(userSaved.getPassword()) ){
             if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())){
-                userSaved.setPassword(changePasswordRequest.getNewPassword());
+                userSaved.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
                 userRepository.save(userSaved);
             }
         }

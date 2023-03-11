@@ -21,7 +21,7 @@ public class User {
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role roles;
     private boolean active;
     private String imageUrl;
     @OneToMany(mappedBy ="user")

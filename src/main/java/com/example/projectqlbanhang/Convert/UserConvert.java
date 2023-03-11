@@ -14,7 +14,7 @@ public class UserConvert {
         dto.setPassword(user.getPassword());
         dto.setPhone(user.getPhone());
         dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole());
+        dto.setRole(user.getRoles());
         dto.setFullName(user.getName());
         dto.setActive(user.isActive());
         dto.setAddress(user.getAddress());
@@ -28,7 +28,7 @@ public class UserConvert {
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
-        user.setRole(userDTO.getRole());
+        user.setRoles(userDTO.getRole());
         user.setActive(userDTO.isActive());
         user.setAddress(userDTO.getAddress());
 
