@@ -23,9 +23,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 
@@ -77,8 +75,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUser(Long[] ids) {
-        return null;
+    public String deleteUser(Long id) {
+        try {
+            userRepository.deleteById(id);
+        }
+        catch (Exception e){
+            return e.getMessage();
+        }
+        return "Delete complete";
     }
 
     @Override
@@ -130,6 +134,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userConvert.toUserDTO(userRepository.save(userSaved));
+    }
+
+    @Override
+    public List<UserDTO> getAllUser() {
+        List<User> userList=userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for(User user:userList){
+            userDTOs.add(userConvert.toUserDTO(user));
+        }
+        return userDTOs;
     }
 
     public void generateToken(User user){

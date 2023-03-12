@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +19,9 @@ public class BillDTO {
     private String userAddress;
     private String paymentStatus;
     private CartDTO cartDTO;
+    private Date paymentDate;
+    private String status;
+    private double sum;
+    private Long id;
+    private Long user_id;
 }

@@ -1,5 +1,6 @@
 package com.example.projectqlbanhang.Service.Impl;
 
+import com.example.projectqlbanhang.Convert.BillConvert;
 import com.example.projectqlbanhang.Entity.*;
 import com.example.projectqlbanhang.Repository.*;
 import com.example.projectqlbanhang.Service.BillService;
@@ -9,7 +10,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +23,7 @@ public class BillServiceImpl implements BillService {
     private final CartItemRepository cartItemRepository;
     private final BillDetailsRepository billDetailsRepository;
     private final PaymentRepository paymentRepository;
+    private final BillConvert billConvert;
 
     @Override
     public BillDTO createBill(CartDTO cartDTO) {
@@ -58,6 +63,38 @@ public class BillServiceImpl implements BillService {
         billDTO.setCartDTO(cartDTO);
         return billDTO;
     }
+
+    @Override
+    public List<BillDTO> getAllBill() {
+        List<Bill> billList=billRepository.findAll();
+        List<BillDTO> billDTO = new ArrayList<>();
+        for(Bill bill : billList){
+            billDTO.add(billConvert.toBillDTO(bill));
+        }
+        return billDTO;
+    }
+
+    @Override
+    public List<BillDTO> getAllBillUser(String username) {
+        User user = userRepository.findUsersByUsernameAndActive(username,true);
+        List<Bill> billList=billRepository.findBillsByUser_IdAndStatus(user.getId(),PaymentStatus.SUCCESS);
+        List<BillDTO> billDTO = new ArrayList<>();
+        for(Bill bill : billList){
+            billDTO.add(billConvert.toBillDTO(bill));
+        }
+        return billDTO;
+    }
+
+    @Override
+    public BillDTO updateBill(Long id, Date date, String status, double total) {
+        Bill bill = billRepository.findBillById(id);
+        bill.setSum(total);
+        bill.setStatus(PaymentStatus.valueOf(status));
+        bill.setPayDate(date);
+        billRepository.save(bill);
+        return billConvert.toBillDTO(bill);
+    }
+
     public double getTotalPrice(List<CartItem> cartItemList) {
         double totalPrice=0;
         for (CartItem cartItem:cartItemList){

@@ -51,4 +51,12 @@ public class UserController {
                 userService.ChangePassWord(UserID,passwordRequest),
                 "Change password complete "));
     }
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse> allUsers(){
+        return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(), userService.getAllUser(),"GET ALL USER"));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<BaseResponse> deleteUser(@PathVariable(value = "id") Long id){
+        return ResponseEntity.ok(new BaseResponse(HttpStatus.OK.value(),null, userService.deleteUser(id)));
+    }
 }
