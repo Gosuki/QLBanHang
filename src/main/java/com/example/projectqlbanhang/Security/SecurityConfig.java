@@ -12,7 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
     private static final String[] USER_URLs={"/user/**","/cart/**","/bill/**"};
-    private static final String[] SECURED_URLs={"/product/**"};
+    private static final String[] ADMIN_URLs={
+            "/product/**",
+            "/user/all",
+            "/user/delete/{id}",
+            "/bill/update/{id}",
+            "/bill/delete/{id}",
+            "/bill/all/**"
+    };
     private static final String[] UN_SECURED_URLs={
             "/product/all",
             "/user/sign-up",
@@ -30,7 +37,7 @@ public class SecurityConfig {
                 .requestMatchers(UN_SECURED_URLs).permitAll().and()
                 .authorizeHttpRequests().requestMatchers(USER_URLs)
                 .hasAnyAuthority("ROLE_ADMIN","ROLE_USER").and()
-                .authorizeHttpRequests().requestMatchers(SECURED_URLs)
+                .authorizeHttpRequests().requestMatchers(ADMIN_URLs)
                 .hasAuthority("ROLE_ADMIN")
                 .anyRequest()
                 .authenticated().and().httpBasic().and().build();
